@@ -1,0 +1,79 @@
+
+*** These modified files were found in JOE when it aborted on Fri Dec 27 21:41:24 2019
+*** JOE was aborted because the terminal closed
+
+*** File 'deployment.yaml'
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mailman-core
+  labels:
+    app: mailman-core
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: mailman-core
+  template:
+    metadata:
+      labels:
+        app: mailman-core
+    spec:
+      containers:
+      - name: mailman-core
+        image: maxking/mailman-core
+        env:
+          - name: HYPERKITTY_API_KEY
+            value: {{ .Values.hyperkitty.apikey }}
+          - name: DATABASE_URL
+            value: {{ .Values.database.url }}
+          - name: DATABASE_TYPE
+            value: postgres
+          - name: DATABASE_CLASS
+            value: mailman.database.postgresql.PostgreSQLDatabase
+          - name: MTA
+            value: postfix
+          - name: SMTP_HOST
+            value: postfix.ggnet.svc.cluster.local
+        resources:
+          requests:
+            cpu: "0.5"
+            memory: "512Mi"
+          limits:
+            cpu: "0.5"
+            memory: "512Mi"
+        volumeMounts:
+          - name: "mailman-opt"
+            mountPath: /opt/mailman
+    volumes:
+      - name: "mailman-opt"
+        persistentVolumeClaim:
+          claimName: mailman
+            
+*** File '(Unnamed)'
+garlic
+network
+network_plugin
+peaches
+eviction
+stats
+status_server
+
+*** File '(Unnamed)'
+confluence-
+confluence-service.yaml
+confluence-ingress.yaml
+confluence-service.yaml
+confluence-synchrony-service.yaml
+haproxy.cfg
+confluence-deployment.yaml
+Chart.yaml
+deployment.yaml
+deployment.yaml
+deployment.yaml
+
+*** File '* Startup Log *'
+Processing '/etc/joe/joerc'...
+Processing '/etc/joe/ftyperc'...
+Finished processing /etc/joe/ftyperc
+Finished processing /etc/joe/joerc

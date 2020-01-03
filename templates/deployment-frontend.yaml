@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mailman-web
+  labels:
+    app: mailman-web
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: mailman-web
+  template:
+    metadata:
+      labels:
+        app: mailman-web
+    spec:
+      containers:
+      - name: mailman-web
+        image: maxking/mailman-web
+        env:
+          - name: HYPERKITTY_API_KEY
+            value: {{ .Values.hyperkitty.apikey }}
+          - name: SECRET_KEY
+            value: {{ .Values.hyperkitty.secretkey }}
+          - name: DATABASE_URL
+            value: {{ .Values.database.hyperkitty.url }}
+          - name: DATABASE_TYPE
+            value: postgres
+          - name: DATABASE_CLASS
+            value: mailman.database.postgresql.PostgreSQLDatabase
+          - name: MTA
+            value: postfix
+          - name: SMTP_HOST
+            value: postfix.ggnet.svc.cluster.local
+        resources:
+          requests:
+            cpu: "0.5"
+            memory: "512Mi"
+          limits:
+            cpu: "0.5"
+            memory: "512Mi"
+        volumeMounts:
+          - name: "mailman-opt"
+            mountPath: /opt/mailman
+    volumes:
+      - name: "mailman-opt"
+        persistentVolumeClaim:
+          claimName: mailman
+            
